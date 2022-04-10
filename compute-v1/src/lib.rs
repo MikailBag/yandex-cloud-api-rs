@@ -1,4 +1,4 @@
-pub mod gen;
+pub mod pb;
 
 use std::sync::Arc;
 
@@ -6,7 +6,7 @@ use tonic::transport::Channel;
 
 use yandex_cloud_api_core::{auth::Iam, svc::AddToken};
 
-use crate::gen::yandex::cloud::compute::v1::{
+use crate::pb::yandex::cloud::compute::v1::{
     instance_service_client::InstanceServiceClient,
     instancegroup::instance_group_service_client::InstanceGroupServiceClient,
 };

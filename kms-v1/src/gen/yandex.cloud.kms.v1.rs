@@ -405,3 +405,663 @@ pub mod symmetric_crypto_service_client {
         }
     }
 }
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateSymmetricKeyRequest {
+    /// ID of the folder to create a symmetric KMS key in.
+    #[prost(string, tag="1")]
+    pub folder_id: ::prost::alloc::string::String,
+    /// Name of the key.
+    #[prost(string, tag="2")]
+    pub name: ::prost::alloc::string::String,
+    /// Description of the key.
+    #[prost(string, tag="3")]
+    pub description: ::prost::alloc::string::String,
+    /// Custom labels for the symmetric KMS key as `key:value` pairs. Maximum 64 per key.
+    /// For example, `"project": "mvp"` or `"source": "dictionary"`.
+    #[prost(map="string, string", tag="4")]
+    pub labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
+    /// Encryption algorithm to be used with a new key version, generated with the next rotation.
+    #[prost(enumeration="SymmetricAlgorithm", tag="5")]
+    pub default_algorithm: i32,
+    /// Interval between automatic rotations. To disable automatic rotation, don't include
+    /// this field in the creation request.
+    #[prost(message, optional, tag="6")]
+    pub rotation_period: ::core::option::Option<::prost_types::Duration>,
+    /// Flag that inhibits deletion of the symmetric KMS key
+    #[prost(bool, tag="7")]
+    pub deletion_protection: bool,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CreateSymmetricKeyMetadata {
+    /// ID of the key being created.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+    /// ID of the primary version of the key being created.
+    #[prost(string, tag="2")]
+    pub primary_version_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct GetSymmetricKeyRequest {
+    /// ID of the symmetric KMS key to return.
+    /// To get the ID of a symmetric KMS key use a \[SymmetricKeyService.List\] request.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListSymmetricKeysRequest {
+    /// ID of the folder to list symmetric KMS keys in.
+    #[prost(string, tag="1")]
+    pub folder_id: ::prost::alloc::string::String,
+    /// The maximum number of results per page to return. If the number of available
+    /// results is larger than \[page_size\], the service returns a \[ListSymmetricKeysResponse.next_page_token\]
+    /// that can be used to get the next page of results in subsequent list requests.
+    /// Default value: 100.
+    #[prost(int64, tag="2")]
+    pub page_size: i64,
+    /// Page token. To get the next page of results, set \[page_token\] to the
+    /// \[ListSymmetricKeysResponse.next_page_token\] returned by a previous list request.
+    #[prost(string, tag="3")]
+    pub page_token: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListSymmetricKeysResponse {
+    /// List of symmetric KMS keys in the specified folder.
+    #[prost(message, repeated, tag="1")]
+    pub keys: ::prost::alloc::vec::Vec<SymmetricKey>,
+    /// This token allows you to get the next page of results for list requests. If the number
+    /// of results is greater than the specified \[ListSymmetricKeysRequest.page_size\], use
+    /// the \[next_page_token\] as the value for the \[ListSymmetricKeysRequest.page_token\] query parameter
+    /// in the next list request. Each subsequent list request will have its own
+    /// \[next_page_token\] to continue paging through the results.
+    #[prost(string, tag="2")]
+    pub next_page_token: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListSymmetricKeyVersionsRequest {
+    /// ID of the symmetric KMS key to list versions for.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+    /// The maximum number of results per page to return. If the number of available
+    /// results is larger than \[page_size\], the service returns a \[ListSymmetricKeyVersionsResponse.next_page_token\]
+    /// that can be used to get the next page of results in subsequent list requests.
+    /// Default value: 100.
+    #[prost(int64, tag="2")]
+    pub page_size: i64,
+    /// Page token. To get the next page of results, set \[page_token\] to the
+    /// \[ListSymmetricKeyVersionsResponse.next_page_token\] returned by a previous list request.
+    #[prost(string, tag="3")]
+    pub page_token: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListSymmetricKeyVersionsResponse {
+    /// List of versions for the specified symmetric KMS key.
+    #[prost(message, repeated, tag="1")]
+    pub key_versions: ::prost::alloc::vec::Vec<SymmetricKeyVersion>,
+    /// This token allows you to get the next page of results for list requests. If the number
+    /// of results is greater than the specified \[ListSymmetricKeyVersionsRequest.page_size\], use
+    /// the \[next_page_token\] as the value for the \[ListSymmetricKeyVersionsRequest.page_token\] query parameter
+    /// in the next list request. Each subsequent list request will have its own
+    /// \[next_page_token\] to continue paging through the results.
+    #[prost(string, tag="2")]
+    pub next_page_token: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateSymmetricKeyRequest {
+    /// ID of the symmetric KMS key to update.
+    /// To get the ID of a symmetric KMS key use a \[SymmetricKeyService.List\] request.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+    /// Field mask that specifies which attributes of the symmetric KMS key are going to be updated.
+    #[prost(message, optional, tag="2")]
+    pub update_mask: ::core::option::Option<::prost_types::FieldMask>,
+    /// New name for the symmetric KMS key.
+    #[prost(string, tag="3")]
+    pub name: ::prost::alloc::string::String,
+    /// New description for the symmetric KMS key.
+    #[prost(string, tag="4")]
+    pub description: ::prost::alloc::string::String,
+    /// New status for the symmetric KMS key.
+    /// Using the \[SymmetricKeyService.Update\] method you can only set ACTIVE or INACTIVE status.
+    #[prost(enumeration="symmetric_key::Status", tag="5")]
+    pub status: i32,
+    /// Custom labels for the symmetric KMS key as `key:value` pairs. Maximum 64 per key.
+    #[prost(map="string, string", tag="6")]
+    pub labels: ::std::collections::HashMap<::prost::alloc::string::String, ::prost::alloc::string::String>,
+    /// Default encryption algorithm to be used with new versions of the symmetric KMS key.
+    #[prost(enumeration="SymmetricAlgorithm", tag="7")]
+    pub default_algorithm: i32,
+    /// Time period between automatic symmetric KMS key rotations.
+    ///
+    /// period between two automatic rotations
+    #[prost(message, optional, tag="8")]
+    pub rotation_period: ::core::option::Option<::prost_types::Duration>,
+    /// Flag that inhibits deletion of the symmetric KMS key
+    #[prost(bool, tag="9")]
+    pub deletion_protection: bool,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct UpdateSymmetricKeyMetadata {
+    /// ID of the key being updated.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DeleteSymmetricKeyRequest {
+    /// ID of the key to be deleted.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct DeleteSymmetricKeyMetadata {
+    /// ID of the key being deleted.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SetPrimarySymmetricKeyVersionRequest {
+    /// ID of the key to set a primary version for.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+    /// ID of the version that should become primary for the specified key.
+    #[prost(string, tag="2")]
+    pub version_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct SetPrimarySymmetricKeyVersionMetadata {
+    /// ID of the key that the primary version if being changed for.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+    /// ID of the version that is being made primary for the key.
+    #[prost(string, tag="2")]
+    pub version_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct RotateSymmetricKeyRequest {
+    /// ID of the key to be rotated.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct RotateSymmetricKeyMetadata {
+    /// ID of the key being rotated.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+    /// ID of the version generated as a result of key rotation.
+    #[prost(string, tag="2")]
+    pub new_primary_version_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ScheduleSymmetricKeyVersionDestructionRequest {
+    /// ID of the key whose version should be scheduled for destruction.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+    /// ID of the version to be destroyed.
+    #[prost(string, tag="2")]
+    pub version_id: ::prost::alloc::string::String,
+    /// Time interval between the version destruction request and actual destruction.
+    /// Default value: 7 days.
+    #[prost(message, optional, tag="3")]
+    pub pending_period: ::core::option::Option<::prost_types::Duration>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ScheduleSymmetricKeyVersionDestructionMetadata {
+    /// ID of the key whose version is being scheduled for destruction.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+    /// ID of the version that is being scheduled for destruction.
+    #[prost(string, tag="2")]
+    pub version_id: ::prost::alloc::string::String,
+    /// Time when the version is scheduled to be destroyed.
+    #[prost(message, optional, tag="3")]
+    pub destroy_at: ::core::option::Option<::prost_types::Timestamp>,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CancelSymmetricKeyVersionDestructionRequest {
+    /// ID of the key to cancel a version's destruction for.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+    /// ID of the version whose scheduled destruction should be cancelled.
+    #[prost(string, tag="2")]
+    pub version_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct CancelSymmetricKeyVersionDestructionMetadata {
+    /// ID of the key whose version's destruction is being cancelled.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+    /// ID of the version whose scheduled destruction is being cancelled.
+    #[prost(string, tag="2")]
+    pub version_id: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListSymmetricKeyOperationsRequest {
+    /// ID of the symmetric KMS key to get operations for.
+    ///
+    /// To get the key ID, use a \[SymmetricKeyService.List\] request.
+    #[prost(string, tag="1")]
+    pub key_id: ::prost::alloc::string::String,
+    /// The maximum number of results per page that should be returned. If the number of available
+    /// results is larger than \[page_size\], the service returns a \[ListSymmetricKeyOperationsResponse.next_page_token\]
+    /// that can be used to get the next page of results in subsequent list requests.
+    /// Default value: 100.
+    #[prost(int64, tag="2")]
+    pub page_size: i64,
+    /// Page token. To get the next page of results, set \[page_token\] to the
+    /// \[ListSymmetricKeyOperationsResponse.next_page_token\] returned by a previous list request.
+    #[prost(string, tag="3")]
+    pub page_token: ::prost::alloc::string::String,
+}
+#[derive(Clone, PartialEq, ::prost::Message)]
+pub struct ListSymmetricKeyOperationsResponse {
+    /// List of operations for the specified key.
+    #[prost(message, repeated, tag="1")]
+    pub operations: ::prost::alloc::vec::Vec<super::super::operation::Operation>,
+    /// This token allows you to get the next page of results for list requests. If the number of results
+    /// is larger than \[ListSymmetricKeyOperationsRequest.page_size\], use the \[next_page_token\] as the value
+    /// for the \[ListSymmetricKeyOperationsRequest.page_token\] query parameter in the next list request.
+    /// Each subsequent list request will have its own \[next_page_token\] to continue paging through the results.
+    #[prost(string, tag="2")]
+    pub next_page_token: ::prost::alloc::string::String,
+}
+/// Generated client implementations.
+pub mod symmetric_key_service_client {
+    #![allow(unused_variables, dead_code, missing_docs, clippy::let_unit_value)]
+    use tonic::codegen::*;
+    /// Set of methods for managing symmetric KMS keys.
+    #[derive(Debug, Clone)]
+    pub struct SymmetricKeyServiceClient<T> {
+        inner: tonic::client::Grpc<T>,
+    }
+    impl SymmetricKeyServiceClient<tonic::transport::Channel> {
+        /// Attempt to create a new client by connecting to a given endpoint.
+        pub async fn connect<D>(dst: D) -> Result<Self, tonic::transport::Error>
+        where
+            D: std::convert::TryInto<tonic::transport::Endpoint>,
+            D::Error: Into<StdError>,
+        {
+            let conn = tonic::transport::Endpoint::new(dst)?.connect().await?;
+            Ok(Self::new(conn))
+        }
+    }
+    impl<T> SymmetricKeyServiceClient<T>
+    where
+        T: tonic::client::GrpcService<tonic::body::BoxBody>,
+        T::Error: Into<StdError>,
+        T::ResponseBody: Default + Body<Data = Bytes> + Send + 'static,
+        <T::ResponseBody as Body>::Error: Into<StdError> + Send,
+    {
+        pub fn new(inner: T) -> Self {
+            let inner = tonic::client::Grpc::new(inner);
+            Self { inner }
+        }
+        pub fn with_interceptor<F>(
+            inner: T,
+            interceptor: F,
+        ) -> SymmetricKeyServiceClient<InterceptedService<T, F>>
+        where
+            F: tonic::service::Interceptor,
+            T: tonic::codegen::Service<
+                http::Request<tonic::body::BoxBody>,
+                Response = http::Response<
+                    <T as tonic::client::GrpcService<tonic::body::BoxBody>>::ResponseBody,
+                >,
+            >,
+            <T as tonic::codegen::Service<
+                http::Request<tonic::body::BoxBody>,
+            >>::Error: Into<StdError> + Send + Sync,
+        {
+            SymmetricKeyServiceClient::new(InterceptedService::new(inner, interceptor))
+        }
+        /// Compress requests with `gzip`.
+        ///
+        /// This requires the server to support it otherwise it might respond with an
+        /// error.
+        #[must_use]
+        pub fn send_gzip(mut self) -> Self {
+            self.inner = self.inner.send_gzip();
+            self
+        }
+        /// Enable decompressing responses with `gzip`.
+        #[must_use]
+        pub fn accept_gzip(mut self) -> Self {
+            self.inner = self.inner.accept_gzip();
+            self
+        }
+        /// Creates a symmetric KMS key in the specified folder.
+        pub async fn create(
+            &mut self,
+            request: impl tonic::IntoRequest<super::CreateSymmetricKeyRequest>,
+        ) -> Result<
+                tonic::Response<super::super::super::operation::Operation>,
+                tonic::Status,
+            > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/yandex.cloud.kms.v1.SymmetricKeyService/Create",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Returns the specified symmetric KMS key.
+        ///
+        ///  To get the list of available symmetric KMS keys, make a [SymmetricKeyService.List] request.
+        pub async fn get(
+            &mut self,
+            request: impl tonic::IntoRequest<super::GetSymmetricKeyRequest>,
+        ) -> Result<tonic::Response<super::SymmetricKey>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/yandex.cloud.kms.v1.SymmetricKeyService/Get",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Returns the list of symmetric KMS keys in the specified folder.
+        pub async fn list(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ListSymmetricKeysRequest>,
+        ) -> Result<tonic::Response<super::ListSymmetricKeysResponse>, tonic::Status> {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/yandex.cloud.kms.v1.SymmetricKeyService/List",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Returns the list of versions of the specified symmetric KMS key.
+        pub async fn list_versions(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ListSymmetricKeyVersionsRequest>,
+        ) -> Result<
+                tonic::Response<super::ListSymmetricKeyVersionsResponse>,
+                tonic::Status,
+            > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/yandex.cloud.kms.v1.SymmetricKeyService/ListVersions",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Updates the specified symmetric KMS key.
+        pub async fn update(
+            &mut self,
+            request: impl tonic::IntoRequest<super::UpdateSymmetricKeyRequest>,
+        ) -> Result<
+                tonic::Response<super::super::super::operation::Operation>,
+                tonic::Status,
+            > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/yandex.cloud.kms.v1.SymmetricKeyService/Update",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Deletes the specified symmetric KMS key. This action also automatically schedules
+        /// the destruction of all of the key's versions in 72 hours.
+        ///
+        /// The key and its versions appear absent in [SymmetricKeyService.Get] and [SymmetricKeyService.List]
+        /// requests, but can be restored within 72 hours with a request to tech support.
+        pub async fn delete(
+            &mut self,
+            request: impl tonic::IntoRequest<super::DeleteSymmetricKeyRequest>,
+        ) -> Result<
+                tonic::Response<super::super::super::operation::Operation>,
+                tonic::Status,
+            > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/yandex.cloud.kms.v1.SymmetricKeyService/Delete",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Sets the primary version for the specified key. The primary version is used
+        /// by default for all encrypt/decrypt operations where no version ID is specified.
+        pub async fn set_primary_version(
+            &mut self,
+            request: impl tonic::IntoRequest<super::SetPrimarySymmetricKeyVersionRequest>,
+        ) -> Result<
+                tonic::Response<super::super::super::operation::Operation>,
+                tonic::Status,
+            > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/yandex.cloud.kms.v1.SymmetricKeyService/SetPrimaryVersion",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Schedules the specified key version for destruction.
+        ///
+        /// Scheduled destruction can be cancelled with the [SymmetricKeyService.CancelVersionDestruction] method.
+        pub async fn schedule_version_destruction(
+            &mut self,
+            request: impl tonic::IntoRequest<
+                super::ScheduleSymmetricKeyVersionDestructionRequest,
+            >,
+        ) -> Result<
+                tonic::Response<super::super::super::operation::Operation>,
+                tonic::Status,
+            > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/yandex.cloud.kms.v1.SymmetricKeyService/ScheduleVersionDestruction",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Cancels previously scheduled version destruction, if the version hasn't been destroyed yet.
+        pub async fn cancel_version_destruction(
+            &mut self,
+            request: impl tonic::IntoRequest<
+                super::CancelSymmetricKeyVersionDestructionRequest,
+            >,
+        ) -> Result<
+                tonic::Response<super::super::super::operation::Operation>,
+                tonic::Status,
+            > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/yandex.cloud.kms.v1.SymmetricKeyService/CancelVersionDestruction",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Rotates the specified key: creates a new key version and makes it the primary version.
+        /// The old version remains available for decryption of ciphertext encrypted with it.
+        pub async fn rotate(
+            &mut self,
+            request: impl tonic::IntoRequest<super::RotateSymmetricKeyRequest>,
+        ) -> Result<
+                tonic::Response<super::super::super::operation::Operation>,
+                tonic::Status,
+            > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/yandex.cloud.kms.v1.SymmetricKeyService/Rotate",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Lists operations for the specified symmetric KMS key.
+        pub async fn list_operations(
+            &mut self,
+            request: impl tonic::IntoRequest<super::ListSymmetricKeyOperationsRequest>,
+        ) -> Result<
+                tonic::Response<super::ListSymmetricKeyOperationsResponse>,
+                tonic::Status,
+            > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/yandex.cloud.kms.v1.SymmetricKeyService/ListOperations",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Lists existing access bindings for the specified key.
+        pub async fn list_access_bindings(
+            &mut self,
+            request: impl tonic::IntoRequest<
+                super::super::super::access::ListAccessBindingsRequest,
+            >,
+        ) -> Result<
+                tonic::Response<super::super::super::access::ListAccessBindingsResponse>,
+                tonic::Status,
+            > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/yandex.cloud.kms.v1.SymmetricKeyService/ListAccessBindings",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Sets access bindings for the key.
+        pub async fn set_access_bindings(
+            &mut self,
+            request: impl tonic::IntoRequest<
+                super::super::super::access::SetAccessBindingsRequest,
+            >,
+        ) -> Result<
+                tonic::Response<super::super::super::operation::Operation>,
+                tonic::Status,
+            > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/yandex.cloud.kms.v1.SymmetricKeyService/SetAccessBindings",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+        /// Updates access bindings for the specified key.
+        pub async fn update_access_bindings(
+            &mut self,
+            request: impl tonic::IntoRequest<
+                super::super::super::access::UpdateAccessBindingsRequest,
+            >,
+        ) -> Result<
+                tonic::Response<super::super::super::operation::Operation>,
+                tonic::Status,
+            > {
+            self.inner
+                .ready()
+                .await
+                .map_err(|e| {
+                    tonic::Status::new(
+                        tonic::Code::Unknown,
+                        format!("Service was not ready: {}", e.into()),
+                    )
+                })?;
+            let codec = tonic::codec::ProstCodec::default();
+            let path = http::uri::PathAndQuery::from_static(
+                "/yandex.cloud.kms.v1.SymmetricKeyService/UpdateAccessBindings",
+            );
+            self.inner.unary(request.into_request(), path, codec).await
+        }
+    }
+}
