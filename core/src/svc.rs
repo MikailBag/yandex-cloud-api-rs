@@ -5,11 +5,11 @@ use std::sync::Arc;
 
 /// Interceptor
 pub struct AddToken {
-    iam: Arc<Iam>,
+    iam: Iam,
 }
 
 impl AddToken {
-    pub fn new(iam: Arc<Iam>) -> Self {
+    pub fn new(iam: Iam) -> Self {
         AddToken { iam }
     }
 }

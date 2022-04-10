@@ -11,6 +11,7 @@ pub struct CloudService {
 struct Grpc {
     file_path: String,
     code_path: String,
+    name: String,
 }
 
 impl CloudService {
@@ -29,10 +30,11 @@ impl CloudService {
         self
     }
 
-    pub fn with_grpc(mut self, file_path: &str, code_path: &str) -> Self {
+    pub fn with_grpc(mut self, name: &str, file_path: &str, code_path: &str) -> Self {
         let g = Grpc {
             file_path: file_path.to_string(),
             code_path: code_path.to_string(),
+            name: name.to_string(),
         };
         self.grpc.push(g);
         self
@@ -47,19 +49,8 @@ impl CloudService {
         PathBuf::from(format!("./{}-{}/src", self.name, self.version))
     }
 
-    fn do_emit(&self) {
-        println!("------ Compiling {}/{} ------", self.name, self.version);
-        if self.grpc.is_empty() {
-            panic!("No grpc services configured");
-        }
-
-        let client_name = self
-            .client_name
-            .as_ref()
-            .expect("client name not configured");
-
+    fn compile_protos(&self) {
         let gen_dir = self.src_path().join("gen");
-
         let builder = tonic_build::configure()
             .build_client(true)
             .build_server(false)
@@ -76,6 +67,11 @@ impl CloudService {
         builder
             .compile(&protos, &["./vendor"])
             .expect("failed to compile service");
+    }
+
+    fn generate_pb_rs(&self) {
+        let gen_dir = self.src_path().join("gen");
+
         println!("Generating pb.rs (file which imports all tonic definitions and stubs)");
 
         let mut pkg_pathes = Vec::new();
@@ -86,13 +82,9 @@ impl CloudService {
             let path = item.path();
             let name = path.file_stem().expect("invalid file name");
             let name = name.to_str().expect("invalid file name");
-            dbg!(&path);
-            dbg!(name);
             if !path.file_name().unwrap().to_str().unwrap().ends_with(".rs") {
                 continue;
             }
-
-            println!("Found generated file {name}");
 
             pkg_pathes.push(
                 name.split('.')
@@ -132,6 +124,69 @@ impl CloudService {
         }
         let pb_rs_path = self.src_path().join("pb.rs");
         std::fs::write(pb_rs_path, pb_rs).unwrap();
+    }
+
+    fn generate_client(&self) {
+        println!("Generating generated_client.rs (client)");
+        let client_name = self
+            .client_name
+            .as_ref()
+            .expect("client name not configured");
+        let endpoint = self
+            .endpoint
+            .as_ref()
+            .expect("missing endpoint unsupported");
+
+        let mut code = String::new();
+        code +=
+            "use tonic::{transport::Channel, codegen::InterceptedService, transport::Error};\n\n";
+        code += "use yandex_cloud_api_core::{auth::Iam, svc::AddToken};\n";
+        code += &format!(
+            "use crate::pb::yandex::cloud::{}::{}::{{\n",
+            self.name, self.version
+        );
+        for g in &self.grpc {
+            code += &format!("    {},\n", g.code_path);
+        }
+        code += "};\n\n";
+        code += &format!("/// Yandex Cloud {} {} client\n", self.name, self.version);
+        code += &format!("pub struct {} {{\n", client_name);
+        code += "    iam: Iam,\n";
+        code += "}\n\n";
+
+        code += &format!("const ENDPOINT: &str = \"{endpoint}\";\n\n");
+
+        code += &format!("impl {client_name} {{\n");
+        for g in &self.grpc {
+            let type_name = g.code_path.split("::").last().unwrap();
+            code += &format!("    pub async fn {}(\n", g.name);
+            code += "        &self,\n";
+            code += "    ) -> Result<\n";
+            code += &format!("{type_name}<InterceptedService<Channel, AddToken>>, Error>\n");
+            code += "     {\n";
+
+            code +=
+                "    let channel = Channel::from_static(ENDPOINT).connect().await?; let client = ";
+            code += &format!(
+                "{type_name}::with_interceptor(channel, AddToken::new(self.iam.clone()));"
+            );
+            code += "Ok(client)}";
+        }
+        code += "}";
+
+        let out_file_path = self.src_path().join("generated_client.rs");
+        std::fs::write(out_file_path, code).unwrap();
+    }
+
+    fn do_emit(&self) {
+        println!("------ Compiling {}/{} ------", self.name, self.version);
+        if self.grpc.is_empty() {
+            panic!("No grpc services configured");
+        }
+
+        self.compile_protos();
+        self.generate_pb_rs();
+        self.generate_client();
     }
 
     pub fn emit(self) {
