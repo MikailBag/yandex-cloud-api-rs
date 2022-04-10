@@ -1,0 +1,2 @@
+[workspace]
+members = ["core", "providers", "codegen", "compute-v1", "kms-v1"]
