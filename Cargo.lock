@@ -1601,6 +1601,7 @@ name = "yandex-cloud-api-core"
 version = "0.1.0"
 dependencies = [
  "http",
+ "tokio",
  "tonic",
  "tower",
 ]

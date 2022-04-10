@@ -8,6 +8,8 @@ use std::{
     time::{Duration, Instant},
 };
 
+use crate::util::RaiiTask;
+
 /// Opaque error
 pub struct TokenProviderError(Box<dyn Error + Send + Sync + 'static>);
 
@@ -24,6 +26,7 @@ pub struct Iam {
     provider: Arc<dyn RawTokenProvider>,
     state: Arc<Mutex<State>>,
     settings: Arc<Settings>,
+    background: Option<Arc<RaiiTask<()>>>,
 }
 
 /// Additional [`Iam`] settings.
@@ -86,11 +89,25 @@ impl Iam {
         let state = State {
             current_token: None,
         };
-        Iam {
+        let mut iam = Iam {
             provider: Arc::new(provider),
             state: Arc::new(Mutex::new(state)),
             settings: Arc::new(settings),
-        }
+            background: None
+        };
+        iam.start_background_task();
+        iam
+    }
+
+    fn start_background_task(&mut self) {
+        let me = self.clone();
+        let fut = async move {
+            loop {
+                tokio::time::sleep(me.settings.refresh_after).await;
+                me.refresh().await.ok();
+            }
+        };
+        self.background = Some(Arc::new(RaiiTask::spawn(fut)));
     }
 
     fn make_wrapper(&self, token: String) -> IamToken {
@@ -128,7 +145,7 @@ impl Iam {
         if let Some(t) = self.get_cached() {
             return Ok(self.make_wrapper(t));
         }
-        
+
         Err(TokenProviderError::new(Uninitialized))
     }
 }
