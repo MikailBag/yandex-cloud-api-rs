@@ -485,16 +485,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "kms-v1"
-version = "0.1.0"
-dependencies = [
- "prost",
- "prost-types",
- "tonic",
- "yandex-cloud-api-core",
-]
-
-[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1613,4 +1603,14 @@ dependencies = [
  "http",
  "tonic",
  "tower",
+]
+
+[[package]]
+name = "yandex-cloud-api-kms-v1"
+version = "0.1.0"
+dependencies = [
+ "prost",
+ "prost-types",
+ "tonic",
+ "yandex-cloud-api-core",
 ]

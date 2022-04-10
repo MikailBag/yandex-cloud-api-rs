@@ -1,5 +1,5 @@
 [package]
-name = "kms-v1"
+name = "yandex-cloud-api-kms-v1"
 version = "0.1.0"
 edition = "2021"
 
