@@ -14,6 +14,9 @@ pub struct ComputeV1 {
 const ENDPOINT: &str = "compute.api.cloud.yandex.net";
 
 impl ComputeV1 {
+    pub fn new(iam: Iam) -> Self {
+        Self { iam }
+    }
     pub async fn instances(
         &self,
     ) -> Result<InstanceServiceClient<InterceptedService<Channel, AddToken>>, Error> {

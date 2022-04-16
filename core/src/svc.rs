@@ -1,7 +1,6 @@
 use tonic::metadata::MetadataValue;
 
 use crate::auth::Iam;
-use std::sync::Arc;
 
 /// Interceptor
 pub struct AddToken {

@@ -93,7 +93,7 @@ impl Iam {
             provider: Arc::new(provider),
             state: Arc::new(Mutex::new(state)),
             settings: Arc::new(settings),
-            background: None
+            background: None,
         };
         iam.start_background_task();
         iam

@@ -157,6 +157,7 @@ impl CloudService {
         code += &format!("const ENDPOINT: &str = \"{endpoint}\";\n\n");
 
         code += &format!("impl {client_name} {{\n");
+        code += "pub fn new(iam: Iam) -> Self { Self {iam} }";
         for g in &self.grpc {
             let type_name = g.code_path.split("::").last().unwrap();
             code += &format!("    pub async fn {}(\n", g.name);
