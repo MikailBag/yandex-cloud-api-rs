@@ -45,8 +45,6 @@ enum Error {
 #[derive(serde_derive::Deserialize)]
 struct Response {
     iam_token: String,
-    // TODO
-    // expires_at: String
 }
 
 impl RawTokenProvider for CliProvider {

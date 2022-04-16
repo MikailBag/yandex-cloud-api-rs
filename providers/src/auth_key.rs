@@ -1,5 +1,8 @@
+mod loader;
+
 use std::{
     future::Future,
+    path::PathBuf,
     time::{Duration, Instant},
 };
 
@@ -22,34 +25,30 @@ pub struct Settings {
     /// Private key in PEM format
     pub pem: String,
 }
-
-fn take_string(val: &mut serde_json::Value, pathes: &[&str]) -> Option<String> {
-    for path in pathes {
-        let v = val.pointer_mut(path).take();
-        let v = match v {
-            Some(v) if v.is_string() => v.take(),
-            _ => continue,
-        };
-        if let serde_json::Value::String(s) = v {
-            return Some(s);
-        } else {
-            unreachable!()
-        }
-    }
-    None
+pub enum AuthorizedKeyLocation {
+    File(PathBuf),
+    PathInEnvVar(String),
 }
+
+pub struct AuthorizedKeySearchSpec {
+    pub locations: Vec<AuthorizedKeyLocation>,
+}
+
+#[derive(Debug, thiserror::Error)]
+#[error(transparent)]
+pub struct SearchError(loader::LoadError);
 
 impl Settings {
     /// Creates settings from CLI-style or API-style JSON
     pub fn from_json(json: &mut serde_json::Value) -> Option<Self> {
-        let private_key = take_string(json, &["/privateKey", "/private_key"])?;
-        let kid = take_string(json, &["/key/id", "/id"])?;
-        let sid = take_string(json, &["/key/serviceAccountId", "/service_account_id"])?;
-        Some(Settings {
-            key_id: kid.to_string(),
-            sa_id: sid.to_string(),
-            pem: private_key.to_string(),
-        })
+        loader::make_settings_from_json(json)
+    }
+
+    /// Searches for key in specified location
+    pub async fn search(spec: &AuthorizedKeySearchSpec) -> Result<Self, SearchError> {
+        loader::load_from_search_spec(spec)
+            .await
+            .map_err(SearchError)
     }
 }
 
