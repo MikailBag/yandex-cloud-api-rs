@@ -1,2 +1,2 @@
 [workspace]
-members = ["core", "providers", "codegen", "compute-v1", "kms-v1"]
+members = ["core", "providers", "codegen", "compute-v1", "kms-v1", "ydb-v1"]
