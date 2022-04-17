@@ -16,7 +16,7 @@ impl CliProvider {
         async move {
             let mut cmd = tokio::process::Command::new("yc");
             cmd.arg("iam").arg("create-token");
-            cmd.arg("-o").arg("json");
+            cmd.arg("--format").arg("json");
             let out = cmd.output().await?;
             if !out.status.success() {
                 return Err(Error::Fail(
