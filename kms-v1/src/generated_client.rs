@@ -11,7 +11,7 @@ pub struct KmsV1 {
     iam: Iam,
 }
 
-const ENDPOINT: &str = "kms.api.cloud.yandex.net";
+const ENDPOINT: &str = "https://kms.api.cloud.yandex.net";
 
 impl KmsV1 {
     pub fn new(iam: Iam) -> Self {

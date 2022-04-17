@@ -11,7 +11,7 @@ pub struct ComputeV1 {
     iam: Iam,
 }
 
-const ENDPOINT: &str = "compute.api.cloud.yandex.net";
+const ENDPOINT: &str = "https://compute.api.cloud.yandex.net";
 
 impl ComputeV1 {
     pub fn new(iam: Iam) -> Self {

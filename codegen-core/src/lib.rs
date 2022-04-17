@@ -162,7 +162,7 @@ impl CloudService {
         code += "    iam: Iam,\n";
         code += "}\n\n";
 
-        code += &format!("const ENDPOINT: &str = \"{endpoint}\";\n\n");
+        code += &format!("const ENDPOINT: &str = \"https://{endpoint}\";\n\n");
 
         code += &format!("impl {client_name} {{\n");
         code += "pub fn new(iam: Iam) -> Self { Self {iam} }";

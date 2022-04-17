@@ -11,7 +11,7 @@ pub struct YdbV1 {
     iam: Iam,
 }
 
-const ENDPOINT: &str = "ydb.api.cloud.yandex.net";
+const ENDPOINT: &str = "https://ydb.api.cloud.yandex.net";
 
 impl YdbV1 {
     pub fn new(iam: Iam) -> Self {
