@@ -1,5 +1,4 @@
 mod catalog;
-mod service;
 #[cfg(test)]
 mod tests;
 

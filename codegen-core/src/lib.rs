@@ -45,13 +45,11 @@ impl CloudService {
         self
     }
 
-    #[cfg(test)]
-    pub(crate) fn name(&self) -> &str {
+    pub fn name(&self) -> &str {
         &self.name
     }
 
-    #[cfg(test)]
-    pub(crate) fn endpoint(&self) -> &str {
+    pub fn endpoint(&self) -> &str {
         self.endpoint.as_ref().unwrap()
     }
 

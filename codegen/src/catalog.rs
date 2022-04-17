@@ -1,4 +1,4 @@
-use crate::service::CloudService;
+use codegen_core::CloudService;
 
 fn make_compute_v1() -> CloudService {
     CloudService::new("compute", "v1")
