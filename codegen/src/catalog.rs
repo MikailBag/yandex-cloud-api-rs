@@ -32,6 +32,27 @@ fn make_kms_v1() -> CloudService {
         )
 }
 
+fn make_ydb_v1() -> CloudService {
+    CloudService::new("ydb", "v1")
+        .with_endpoint("ydb.api.cloud.yandex.net")
+        .with_client_name("YdbV1")
+        .with_grpc(
+            "backups",
+            "backup_service.proto",
+            "backup_service_client::BackupServiceClient",
+        )
+        .with_grpc(
+            "databases",
+            "database_service.proto",
+            "database_service_client::DatabaseServiceClient",
+        )
+        .with_grpc(
+            "locations",
+            "location_service.proto",
+            "location_service_client::LocationServiceClient",
+        )
+}
+
 pub fn services() -> Vec<CloudService> {
-    vec![make_compute_v1(), make_kms_v1()]
+    vec![make_compute_v1(), make_kms_v1(), make_ydb_v1()]
 }
