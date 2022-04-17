@@ -1,5 +1,7 @@
 mod catalog;
 mod service;
+#[cfg(test)]
+mod tests;
 
 fn main() {
     let services = catalog::services();
